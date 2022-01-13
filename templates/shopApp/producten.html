@@ -1,0 +1,43 @@
+{% extends 'shopApp/base.html' %}
+{% load extraShopApp %}
+{% load cropping %}
+
+{% block content %}
+    <header class="w3-container w3-teal">
+    {% if filter == "alles" %}
+        <h1>Alle producten</h1>
+    {% else %}
+        <h1>Categorie: {{ filter }}</h1>
+    {% endif %}
+    </header>
+
+    <div class="w3-container">
+
+        {% for prod in producten %}
+            {% if prod.zichtbaar %}
+            <div class="w3-card-4 w3-margin w3-round" style="width: max(17%, 250px); height: max-content; display: inline-block;">
+                <div class="w3-display-container w3-text-white">
+                  <img class="w3-round" src="{% cropped_thumbnail prod "cropping" %}" alt="Product foto" style="width:100%;">
+                  <div class="w3-xlarge w3-display-bottomleft w3-padding" style="text-shadow:2px 2px 0 #444">{{ prod }} {% if request.session.cart and request.session.cart|contains_key:prod.id %} <span class="w3-badge w3-blue">{% get_double_object_property request.session.cart prod.id 'aantal' %}</span>{% endif %}</div>
+                </div>
+
+                <div class="w3-row">
+                    <div class="w3-third w3-center">
+                        <h5 class="w3-tiny">HOEVEELHEID</h5>
+                        <p><span class="w3-badge w3-black">{{ prod.hoeveelheid }}</span>  {{ prod.eenheid }}</p>
+                    </div>
+                    <div class="w3-third w3-center">
+                        <h5 class="w3-tiny">CATEGORIE</h5>
+                        <img src="https://img.icons8.com/ios-filled/30/000000/{{ prod.categorie.icon }}.png" alt="cat-icon">
+                    </div>
+                    <div class="w3-third w3-center w3-margin-bottom">
+                        <h5 class="w3-tiny">TOEVOEGEN</h5>
+                        <a class="w3-button w3-blue w3-round-large" href="{% url 'cart_add' prod.id %}"><img alt="icon ({{ cat.naam }})" src="https://img.icons8.com/ios-filled/30/000000/add-shopping-cart.png" /></a>
+                    </div>
+                  </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+{% endblock %}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Bit Shop Template{% endblock %}</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+    <div class="w3-sidebar w3-bar-block w3-light-grey w3-card w3-large" style="width: max(5%, 300px);">
+        <h3 class="w3-bar-item"><b>De Dorpsslagerij</b></h3>
+        <div class="w3-bar-item">
+            <a href="/filter/alles" class="w3-button" style="width: 90%; text-align: left;"><img alt="icon (alles)" style="margin-right: 30px;" src="https://img.icons8.com/ios-filled/40/000000/show-all-views.png" />Alle producten</a>
+        </div>
+        {% for cat in categories %}
+            {% if cat.zichtbaar %}
+            <div class="w3-bar-item">
+                <a href="/filter/{{ cat.naam }}" class="w3-button" style="width: 90%; text-align: left;"><img alt="icon ({{ cat.naam }})" style="margin-right: 30px;" src="https://img.icons8.com/ios-filled/40/000000/{{ cat.icon }}.png" />{{ cat.naam }}</a>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        <br>
+        <hr style="border-top: 2px dotted black; width: 90%; margin-left: 5%;">
+        <div class="w3-bar-item">
+            <a href="/cart" class="w3-button" style="width: 90%; text-align: left;"><img alt="icon (mandje)" style="margin-right: 30px;" src="https://img.icons8.com/ios-filled/40/000000/shopping-cart.png" />Winkelwagen</a>
+        </div>
+
+        <hr style="border-top: 2px dotted black; width: 90%; margin-left: 5%;">
+        <br>
+        <div class="w3-margin" style="text-align: center;">
+            <a href="/admin">admin</a>
+        </div>
+
+    </div>
+
+    <div class="" style="margin-left: max(5%, 300px);">
+        {% block content %}
+        <header class="w3-container w3-teal">
+            <h1>Producten</h1>
+        </header>
+
+        <div class="w3-container">
+            <p>Klik op een filter aan de linkerkant om te beginnen.</p>
+        </div>
+        {% endblock %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{% extends 'shopApp/base.html' %}
+{% block content %}
+    <header class="w3-container w3-purple">
+        <h1>Winkelwagen</h1>
+    </header>
+
+    <div class="w3-container">
+        <ul class="w3-ul w3-margin-top">
+            {% for key, value in request.session.cart.items %}
+
+                <li class="w3-bar">
+                    <img class="w3-circle w3-bar-item" src="{{ value.foto_url }}" alt="Product foto" style="width:120px; height: auto;">
+                    <div class="w3-bar-item">
+                        <h2>{{ value.naam }}</h2>
+                        <p><i>{{ value.hoeveelheid }} {{ value.eenheid }}</i></p>
+                    </div>
+                    <div class="w3-bar-item w3-right">
+                        <div class="w3-bar">
+                            <a href="{% url 'cart_item_remove' value.product_id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/trash.png" alt="trash-icon"></a>
+                            <a href="{% url 'cart_item_decrement' value.product_id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/minus.png" alt="minus-icon"></a>
+                            <p class="w3-bar-item">{{ value.aantal }}</p>
+                            <a href="{% url 'cart_item_increment' value.product_id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/plus.png" alt="plus-icon"></a>
+                        </div>
+                    </div>
+                </li>
+
+            {% endfor %}
+
+            <li class="w3-bar">
+                <div class="w3-bar-item">
+                    <h2>Totaal aantal producten: {{ request.session.cart|length }}</h2>
+                </div>
+
+                <div class="w3-bar-item w3-right">
+                    <a class="w3-tooltip" href="{% url 'bestelling' %}"><span class="w3-text w3-margin-right">doorgaan met bestellen</span><img src="https://img.icons8.com/ios-filled/40/000000/circled-right-2.png" alt="continue-icon"></a>
+                </div>
+
+                <div class="w3-bar-item w3-right">
+                    <p>--</p>
+                </div>
+
+                <div class="w3-bar-item w3-right">
+                    <a class="w3-tooltip" href="{% url 'cart_clear' %}"><span class="w3-text">winkelmand legen</span><img src="https://img.icons8.com/ios-filled/40/000000/clear-shopping-cart.png" alt="clear-shopping-cart-icon"></a>
+                </div>
+
+            </li>
+        </ul>
+    </div>
+
+{% endblock %}
