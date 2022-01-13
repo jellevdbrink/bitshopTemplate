@@ -12,19 +12,19 @@ from shopApp.models import Product, Categorie
 
 
 def product_filter(request, cat="alles"):
-    if cat == "alles":
-        producten = Product.objects.all()
-    else:
-        producten = Product.objects.filter(categorie__naam__contains=cat)
 
     return render(request, 'shopApp/producten.html', {
         'categories': Categorie.objects.all(),
-        'producten': producten,
-        'filter': cat
+        'header_text': 'Alle producten' if cat == "alles" else 'Categorie: ' + cat,
+        'header_colour': 'teal',
+        'producten': Product.objects.all() if cat == "alles" else Product.objects.filter(categorie__naam__contains=cat),
     })
 
 
 def bestelling(request):
+    header_text = 'Bestelling'
+    header_colour = 'amber'
+
     if request.method == 'POST':
         form = BestellingForm(request.POST)
 
@@ -38,6 +38,8 @@ def bestelling(request):
         else:
             return render(request, 'shopApp/bestellling.html', {
                 'categories': Categorie.objects.all(),
+                'header_text': header_text,
+                'header_colour': header_colour,
                 'form': form
             })
 
@@ -46,6 +48,8 @@ def bestelling(request):
     else:
         return render(request, 'shopApp/bestellling.html', {
             'categories': Categorie.objects.all(),
+            'header_text': header_text,
+            'header_colour': header_colour,
             'form': BestellingForm()
         })
 
@@ -53,8 +57,14 @@ def bestelling(request):
 # ----- CART FUNCTIES --------------------------------------------------------------
 
 def cart_view(request):
+    producten_id_list = [int(key) for key in request.session.get('cart').keys()]
+    producten = Product.objects.filter(id__in=producten_id_list)
+
     return render(request, 'shopApp/cart.html', {
-        'categories': Categorie.objects.all()
+        'categories': Categorie.objects.all(),
+        'header_text': 'Winkelwagen',
+        'header_colour': 'purple',
+        'producten': producten
     })
 
 

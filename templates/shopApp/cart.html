@@ -1,25 +1,25 @@
 {% extends 'shopApp/base.html' %}
+{% load cropping %}
+{% load extraShopApp %}
+
 {% block content %}
-    <header class="w3-container w3-purple">
-        <h1>Winkelwagen</h1>
-    </header>
 
     <div class="w3-container">
         <ul class="w3-ul w3-margin-top">
-            {% for key, value in request.session.cart.items %}
+            {% for prod in producten %}
 
                 <li class="w3-bar">
-                    <img class="w3-circle w3-bar-item" src="{{ value.foto_url }}" alt="Product foto" style="width:120px; height: auto;">
+                    <img class="w3-circle w3-bar-item" src="{% cropped_thumbnail prod "cropping" %}" alt="Product foto" style="width:120px; height: auto;">
                     <div class="w3-bar-item">
-                        <h2>{{ value.naam }}</h2>
-                        <p><i>{{ value.hoeveelheid }} {{ value.eenheid }}</i></p>
+                        <h2>{{ prod.naam }}</h2>
+                        <p><i>{{ prod.hoeveelheid }} {{ prod.eenheid }}</i></p>
                     </div>
                     <div class="w3-bar-item w3-right">
                         <div class="w3-bar">
-                            <a href="{% url 'cart_item_remove' value.product_id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/trash.png" alt="trash-icon"></a>
-                            <a href="{% url 'cart_item_decrement' value.product_id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/minus.png" alt="minus-icon"></a>
-                            <p class="w3-bar-item">{{ value.aantal }}</p>
-                            <a href="{% url 'cart_item_increment' value.product_id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/plus.png" alt="plus-icon"></a>
+                            <a href="{% url 'cart_item_remove' prod.id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/trash.png" alt="trash-icon"></a>
+                            <a href="{% url 'cart_item_decrement' prod.id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/minus.png" alt="minus-icon"></a>
+                            <p class="w3-bar-item">{% get_total_amount request.session.cart prod %} {{ prod.eenheid }}</p>
+                            <a href="{% url 'cart_item_increment' prod.id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/plus.png" alt="plus-icon"></a>
                         </div>
                     </div>
                 </li>
