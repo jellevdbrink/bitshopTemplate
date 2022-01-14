@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="nl" style="scroll-behavior: smooth;">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Bit Shop Template{% endblock %}</title>
@@ -14,7 +14,7 @@
         {% for cat in categories %}
             {% if cat.zichtbaar %}
             <div class="w3-bar-item">
-                <a href="/filter/{{ cat.naam }}" class="w3-button" style="width: 90%; text-align: left;"><img alt="icon ({{ cat.naam }})" style="margin-right: 30px;" src="https://img.icons8.com/ios-filled/40/000000/{{ cat.icon }}.png" />{{ cat.naam }}</a>
+                <a href="{% url 'filter' cat.naam %}" class="w3-button" style="width: 90%; text-align: left;"><img alt="icon ({{ cat.naam }})" style="margin-right: 30px;" src="https://img.icons8.com/ios-filled/40/000000/{{ cat.icon }}.png" />{{ cat.naam }}</a>
             </div>
             {% endif %}
         {% endfor %}
@@ -22,7 +22,7 @@
         <br>
         <hr style="border-top: 2px dotted black; width: 90%; margin-left: 5%;">
         <div class="w3-bar-item">
-            <a href="/cart" class="w3-button" style="width: 90%; text-align: left;"><img alt="icon (mandje)" style="margin-right: 30px;" src="https://img.icons8.com/ios-filled/40/000000/shopping-cart.png" />Winkelwagen</a>
+            <a href="{% url 'cart' %}" class="w3-button" style="width: 90%; text-align: left;"><img alt="icon (mandje)" style="margin-right: 30px;" src="https://img.icons8.com/ios-filled/40/000000/shopping-cart.png" />Winkelwagen</a>
         </div>
 
         <hr style="border-top: 2px dotted black; width: 90%; margin-left: 5%;">
@@ -33,20 +33,17 @@
 
     </div>
 
-    <div class="" style="margin-left: max(5%, 300px);">
+    <main id="main-content" class="" style="margin-left: max(5%, 300px);">
         <header class="w3-container w3-{{ header_colour }}">
             <h1>{{ header_text }}</h1>
         </header>
 
         {% block content %}
-        <header class="w3-container w3-teal">
-            <h1>Producten</h1>
-        </header>
 
         <div class="w3-container">
             <p>Klik op een filter aan de linkerkant om te beginnen.</p>
         </div>
         {% endblock %}
-    </div>
+    </main>
 </body>
 </html>

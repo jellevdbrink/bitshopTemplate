@@ -38,6 +38,7 @@ class Product(models.Model):
     snijdbaar = models.BooleanField("Snijdbaar", default=False)
     hoeveelheid = models.PositiveIntegerField("Te bestellen per (bv. 1 st./50 gr.)", default=1, validators=[MinValueValidator(1)])
     zichtbaar = models.BooleanField('Zichtbaar', default=True)
+    # min_value = models.PositiveIntegerField("Minimale waarde", default=1)
 
     EENHEID_CHOICES = [
         ('st.', 'st.'),
