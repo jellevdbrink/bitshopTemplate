@@ -8,9 +8,9 @@
 
         {% for prod in producten %}
             {% if prod.zichtbaar %}
-            <div class="w3-card-4 w3-margin w3-round" style="width: max(17%, 250px); height: max-content; display: inline-block;">
+            <div id="{{ prod.id }}" class="w3-card-4 w3-margin w3-round" style="width: max(17%, 230px); height: max-content; display: inline-block;">
                 <div class="w3-display-container w3-text-white">
-                  <img class="w3-round" src="{% cropped_thumbnail prod "cropping" %}" alt="Product foto" style="width:100%;">
+                  <img class="w3-round" src="{% cropped_thumbnail prod 'cropping' %}" alt="Product foto" style="width:100%;">
                   <div class="w3-xlarge w3-display-bottomleft w3-padding" style="text-shadow:2px 2px 0 #444">{{ prod }} {% if request.session.cart and request.session.cart|contains_key:prod.id %} <span class="w3-badge w3-blue">{% get_double_object_property request.session.cart prod.id 'aantal' %}</span>{% endif %}</div>
                 </div>
 

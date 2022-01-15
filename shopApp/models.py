@@ -20,8 +20,8 @@ class Categorie(models.Model):
 
 
 class Klant(models.Model):
-    naam = models.CharField(max_length=100)
-    email = models.EmailField()
+    naam = models.CharField('Naam', max_length=100)
+    email = models.EmailField('E-mail')
     telnr = models.CharField('Telefoon nummer', max_length=12)
 
     class Meta:

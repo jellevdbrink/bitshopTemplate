@@ -5,46 +5,63 @@
 {% block content %}
 
     <div class="w3-container">
-        <ul class="w3-ul w3-margin-top">
-            {% for prod in producten %}
+        {% if producten %}
+            <div class="">
+                <h2>{{ request.session.cart|length }} {{ producten_text }} in winkelwagen</h2>
+            </div>
+
+            <hr>
+
+            <ul class="w3-ul w3-margin-top">
+                {% for prod in producten %}
+
+                    <li id="{{ prod.id }}" class="w3-bar">
+                        <img class="w3-circle w3-bar-item" src="{% cropped_thumbnail prod 'cropping' %}" alt="Product foto" style="width:120px; height: auto;">
+                        <div class="w3-bar-item">
+                            <h2>{{ prod.naam }}</h2>
+                            <p><i>{{ prod.hoeveelheid }} {{ prod.eenheid }}</i></p>
+                        </div>
+                        <div class="w3-bar-item w3-right">
+                            <div class="w3-bar">
+                                <a href="{% url 'cart_item_remove' prod.id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/trash.png" alt="trash-icon"></a>
+                                <a href="{% url 'cart_item_decrement' prod.id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/minus.png" alt="minus-icon"></a>
+                                <p class="w3-bar-item">{% get_total_amount request.session.cart prod %} {{ prod.eenheid }}</p>
+                                <a href="{% url 'cart_item_increment' prod.id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/plus.png" alt="plus-icon"></a>
+                            </div>
+                        </div>
+                    </li>
+
+                {% endfor %}
 
                 <li class="w3-bar">
-                    <img class="w3-circle w3-bar-item" src="{% cropped_thumbnail prod "cropping" %}" alt="Product foto" style="width:120px; height: auto;">
-                    <div class="w3-bar-item">
-                        <h2>{{ prod.naam }}</h2>
-                        <p><i>{{ prod.hoeveelheid }} {{ prod.eenheid }}</i></p>
-                    </div>
+
+
                     <div class="w3-bar-item w3-right">
-                        <div class="w3-bar">
-                            <a href="{% url 'cart_item_remove' prod.id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/trash.png" alt="trash-icon"></a>
-                            <a href="{% url 'cart_item_decrement' prod.id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/minus.png" alt="minus-icon"></a>
-                            <p class="w3-bar-item">{% get_total_amount request.session.cart prod %} {{ prod.eenheid }}</p>
-                            <a href="{% url 'cart_item_increment' prod.id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/plus.png" alt="plus-icon"></a>
-                        </div>
+                        <a class="w3-tooltip" href="{% url 'bestelling' %}"><span class="w3-text w3-margin-right">doorgaan met bestellen</span><img src="https://img.icons8.com/ios-filled/40/000000/circled-right-2.png" alt="continue-icon"></a>
                     </div>
+
+                    <div class="w3-bar-item w3-right">
+                        <p>--</p>
+                    </div>
+
+                    <div class="w3-bar-item w3-right">
+                        <a class="w3-tooltip" href="{% url 'cart_clear' %}"><span class="w3-text">winkelwagen legen</span><img src="https://img.icons8.com/ios-filled/40/000000/clear-shopping-cart.png" alt="clear-shopping-cart-icon"></a>
+                    </div>
+
                 </li>
+            </ul>
+        {% else %}
 
-            {% endfor %}
+        <div class="w3-card-2 w3-center w3-round" style="width: 60%; margin: 10% auto auto auto;">
+            <header class="w3-pink w3-container">
+                <h2>Dat is jammer...</h2>
+            </header>
+            <div class="w3-container">
+                <p>Je hebt helemaal nog geen producten in je winkelwagen zitten, klik op een categorie om te beginnen met producten toevoegen.</p>
+            </div>
+        </div>
 
-            <li class="w3-bar">
-                <div class="w3-bar-item">
-                    <h2>Totaal aantal producten: {{ request.session.cart|length }}</h2>
-                </div>
-
-                <div class="w3-bar-item w3-right">
-                    <a class="w3-tooltip" href="{% url 'bestelling' %}"><span class="w3-text w3-margin-right">doorgaan met bestellen</span><img src="https://img.icons8.com/ios-filled/40/000000/circled-right-2.png" alt="continue-icon"></a>
-                </div>
-
-                <div class="w3-bar-item w3-right">
-                    <p>--</p>
-                </div>
-
-                <div class="w3-bar-item w3-right">
-                    <a class="w3-tooltip" href="{% url 'cart_clear' %}"><span class="w3-text">winkelmand legen</span><img src="https://img.icons8.com/ios-filled/40/000000/clear-shopping-cart.png" alt="clear-shopping-cart-icon"></a>
-                </div>
-
-            </li>
-        </ul>
+        {% endif %}
     </div>
 
 {% endblock %}

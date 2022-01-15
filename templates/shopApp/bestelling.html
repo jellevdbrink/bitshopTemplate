@@ -1,0 +1,13 @@
+{% extends 'shopApp/base.html' %}
+{% block content %}
+
+<form class="w3-card-2 w3-container w3-round w3-padding w3-light-grey" style="width: 50%; margin: 10% auto auto auto;" action="{% url 'bestelling' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="w3-bar">
+        <a href="{% url 'nieuwe_klant' %}" class="w3-button w3-blue w3-hover-blue-grey w3-round w3-left">Nieuwe klant</a>
+        <input type="submit" class="w3-button w3-{{ header_colour }} w3-hover-blue-grey w3-round w3-right" value="Plaats bestelling">
+    </div>
+</form>
+
+{% endblock %}

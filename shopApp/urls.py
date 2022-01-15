@@ -28,6 +28,8 @@ urlpatterns = [
 
     path('bestelling/', views.bestelling, name='bestelling'),
 
+    path('nieuwe_klant/', views.nieuwe_klant, name='nieuwe_klant'),
+
     path('filter/<str:cat>', views.product_filter, name='filter'),
     path('', views.product_filter, name='home'),
 ]
