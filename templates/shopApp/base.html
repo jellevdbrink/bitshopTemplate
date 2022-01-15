@@ -38,6 +38,17 @@
             <h1>{{ header_text }}</h1>
         </header>
 
+        {% if messages %}
+            <div id="messages">
+                {% for message in messages %}
+                <div class="w3-{{ message.level_tag }} w3-margin w3-panel w3-border w3-round w3-display-container {% if message.extra_tags %}{{ message.extra_tags }}{% endif %}">
+                    <span onclick="this.parentElement.style.display='none'" class="w3-button w3-large w3-display-right" style="height: 100%;">&times;</span>
+                    <p>{{ message }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         {% block content %}
 
         <div class="w3-container">
@@ -45,5 +56,6 @@
         </div>
         {% endblock %}
     </div>
+
 </body>
 </html>

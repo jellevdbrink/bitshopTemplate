@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 
 from shopApp.cart import Cart
@@ -36,6 +37,9 @@ def bestelling(request):
             cart = Cart(request)
             cart.clear()
 
+            # Melding neerzetten
+            messages.success(request, 'Bestelling is gemaakt, er wordt een mail gestuurd naar ' + nieuwe_bestelling.klant.email)
+
             return redirect('home')
 
     elif not request.session.get('cart') or len(request.session['cart']) < 1:
@@ -56,7 +60,9 @@ def nieuwe_klant(request):
         form = KlantForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            nieuw_klant = form.save()
+
+            messages.success(request, "Klant '" + nieuw_klant.naam + "' toegevoegd aan het systeem.")
             return redirect('bestelling')
     else:
         form = KlantForm()
