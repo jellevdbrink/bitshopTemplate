@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from shopApp.cart import Cart
 from shopApp.forms import BestellingForm, KlantForm
-from shopApp.models import Product, Categorie
+from shopApp.models import Product, Categorie, BestellingProduct
 
 
 # def home(request):
@@ -27,18 +27,20 @@ def bestelling(request):
 
         if form.is_valid():
             # Producten in mandje + mandje opslaan
-            nieuwe_bestelling = form.save(commit=False)
-            producten = [int(prod_id) for prod_id in request.session['cart'].keys()]
+            nieuwe_bestelling = form.save()
 
-            nieuwe_bestelling.producten = producten
-            nieuwe_bestelling.save()
+            # Bestelling producten maken en toevoegen
+            for prod_id, item in request.session['cart'].items():
+                product = get_object_or_404(Product, id=int(prod_id))
+                bestel_prod = BestellingProduct(product=product, bestelling=nieuwe_bestelling, aantal=item['aantal'])
+                bestel_prod.save()
 
             # Mandje resetten
             cart = Cart(request)
             cart.clear()
 
             # Melding neerzetten
-            messages.success(request, 'Bestelling is gemaakt, er wordt een mail gestuurd naar ' + nieuwe_bestelling.klant.email)
+            messages.success(request, 'Bestelling is gemaakt, er wordt een bevestiging gestuurd naar ' + nieuwe_bestelling.klant.email)
 
             return redirect('home')
 

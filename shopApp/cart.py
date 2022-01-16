@@ -52,3 +52,5 @@ class Cart:
     def clear(self):
         self.session['cart'] = {}
         self.session.modified = True
+
+

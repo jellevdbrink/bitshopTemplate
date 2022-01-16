@@ -21,7 +21,7 @@ class Categorie(models.Model):
 
 class Klant(models.Model):
     naam = models.CharField('Naam', max_length=100)
-    email = models.EmailField('E-mail')
+    email = models.EmailField('E-mail', unique=True)
     telnr = models.CharField('Telefoon nummer', max_length=12)
 
     class Meta:
@@ -77,7 +77,7 @@ class Product(models.Model):
 
 class Bestelling(models.Model):
     besteltijd = models.DateTimeField(auto_now_add=True)
-    producten = ArrayField(models.IntegerField())
+    # producten = ArrayField(models.IntegerField()) - wordt nu gedaan door BestellingProduct
     klant = models.ForeignKey(Klant, verbose_name="Geplaatst door", on_delete=models.CASCADE, db_index=False)
     dag_ophalen = models.DateField(verbose_name="Dag van ophalen", default=date(2022, 1, 1))
     # medewerker = models.CharField(max_length=50)
@@ -89,3 +89,16 @@ class Bestelling(models.Model):
 
     def __str__(self):
         return str(self.id) + " - " + self.klant.naam
+
+
+class BestellingProduct(models.Model):
+    bestelling = models.ForeignKey(Bestelling, on_delete=models.CASCADE, verbose_name='Bestelling')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Product')
+    aantal = models.PositiveIntegerField(verbose_name='Aantal')
+
+    class Meta:
+        verbose_name = "Bestelling product"
+        verbose_name_plural = "Bestelling producten"
+
+    def __str__(self):
+        return f'Bestelling {self.bestelling.id} - Product {self.product.naam} x{str(self.aantal)}'
