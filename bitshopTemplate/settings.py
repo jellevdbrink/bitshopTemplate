@@ -23,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-$!c7iv@uo(*v*g7jbt4%_ey%1d7r$f_ba=+0#=gzcjm=t8=^8p' # os.environ['SECRET_KEY']
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = (os.getenv('DEBUG_MODE', 'False') == 'True')
 
 ALLOWED_HOSTS = ['*']
 
@@ -91,13 +91,13 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'bitshoptemplate',
         'USER': 'django_app',
-        'PASSWORD': 'bitshopTemplate123',
-        'HOST': 'localhost',
+        'PASSWORD': os.environ['DB_PASSWORD'],
+        'HOST': '10.174.199.109',
         'PORT': '5432',
     }
 }
 
-# admin site login credentials: user=jellevandenbrink, ww=BitShop123
+# admin site login credentials: user=admin, ww=Admin123
 
 
 # Password validation
