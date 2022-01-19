@@ -1,22 +1,9 @@
 from datetime import date
 
-from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
+
 from image_cropping import ImageRatioField
-
-
-class Categorie(models.Model):
-    naam = models.CharField(verbose_name="Categorie naam", max_length=50)
-    icon = models.CharField(verbose_name="Naam van het bijpassende icon (icons8.com -> iOS filled type)", max_length=50, default="question-mark")
-    zichtbaar = models.BooleanField('Zichtbaar', default=True)
-
-    class Meta:
-        verbose_name = "Categorie"
-        verbose_name_plural = "Categorieën"
-
-    def __str__(self):
-        return self.naam
 
 
 class Klant(models.Model):
@@ -25,8 +12,36 @@ class Klant(models.Model):
     telnr = models.CharField('Telefoon nummer', max_length=12)
 
     class Meta:
-        verbose_name = "Klant"
-        verbose_name_plural = "Klanten"
+        verbose_name = "klant"
+        verbose_name_plural = "klanten"
+
+    def __str__(self):
+        return self.naam
+
+
+# ----- PRODUCTEN --------------------------------------------------------------
+
+EENHEID_CHOICES = [
+    ('st.', 'st.'),
+    ('gr.', 'gr.'),
+]
+
+STATE_CHOICES = [
+    ('niet_gestart', 'Niet Gestart'),
+    ('bezig', 'Bezig'),
+    ('probleem', 'Probleem'),
+    ('voltooid', 'Voltooid'),
+]
+
+
+class Categorie(models.Model):
+    naam = models.CharField(verbose_name="Categorie naam", max_length=50)
+    icon = models.CharField(verbose_name="Icon", max_length=50, default="question-mark", help_text="icons8.com -> iOS filled type (bij geen foto: question-mark)")
+    zichtbaar = models.BooleanField('Zichtbaar', default=True)
+
+    class Meta:
+        verbose_name = "categorie"
+        verbose_name_plural = "categorieën"
 
     def __str__(self):
         return self.naam
@@ -35,56 +50,41 @@ class Klant(models.Model):
 class Product(models.Model):
     naam = models.CharField("Product naam", max_length=50)
     categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE, verbose_name="Categorie", db_index=False)
-    snijdbaar = models.BooleanField("Snijdbaar", default=False)
-    hoeveelheid = models.PositiveIntegerField("Te bestellen per (bv. 1 st./50 gr.)", default=1, validators=[MinValueValidator(1)])
-    zichtbaar = models.BooleanField('Zichtbaar', default=True)
-    # min_value = models.PositiveIntegerField("Minimale waarde", default=1)
-
-    EENHEID_CHOICES = [
-        ('st.', 'st.'),
-        ('gr.', 'gr.'),
-    ]
-    eenheid = models.CharField(
-        verbose_name="Eenheid",
-        max_length=3,
-        choices=EENHEID_CHOICES,
-        default='st.'
-    )
-
-    STATE_CHOICES = [
-        ('niet_gestart', 'Niet Gestart'),
-        ('bezig', 'Bezig'),
-        ('probleem', 'Probleem'),
-        ('voltooid', 'Voltooid'),
-    ]
-    state = models.CharField(
-        max_length=20,
-        choices=STATE_CHOICES,
-        default='niet_gestart'
-    )
-
     foto = models.ImageField(verbose_name='Foto van product', upload_to='product_fotos', default='product_fotos/default_product.jpg')
+    beschrijving = models.TextField('Beschrijving product')
+
+    zichtbaar = models.BooleanField('Zichtbaar', default=True)
+    # snijdbaar = models.BooleanField("Snijdbaar", default=False)
+
+    hoeveelheid = models.PositiveIntegerField("Hoeveelheid", default=1, validators=[MinValueValidator(1)], help_text="bv. <1> st. / <100> gr.)")
+    eenheid = models.CharField(verbose_name="Eenheid", max_length=3, choices=EENHEID_CHOICES, default='st.')
+    min_aantal = models.PositiveIntegerField("Minimale aantal", default=1, help_text="Voor een product met een hoeveel van 50 gram en een min waarde van 100 gram, vul <2> in.")
+
+    state = models.CharField(max_length=20, choices=STATE_CHOICES, default='niet_gestart')
     cropping = ImageRatioField('foto', '550x550')
 
     class Meta:
-        verbose_name = "Product"
-        verbose_name_plural = "Producten"
-        ordering = ['state']
+        verbose_name = "product"
+        verbose_name_plural = "producten"
 
     def __str__(self):
         return self.naam
 
 
+#class MarineerProduct
+
+
+# ----- BESTELLINGEN --------------------------------------------------------------
+
 class Bestelling(models.Model):
     besteltijd = models.DateTimeField(auto_now_add=True)
-    # producten = ArrayField(models.IntegerField()) - wordt nu gedaan door BestellingProduct
     klant = models.ForeignKey(Klant, verbose_name="Geplaatst door", on_delete=models.CASCADE, db_index=False)
     dag_ophalen = models.DateField(verbose_name="Dag van ophalen", default=date(2022, 1, 1))
     # medewerker = models.CharField(max_length=50)
 
     class Meta:
-        verbose_name = "Bestelling"
-        verbose_name_plural = "Bestellingen"
+        verbose_name = "bestelling"
+        verbose_name_plural = "bestellingen"
         ordering = ['-besteltijd']
 
     def __str__(self):

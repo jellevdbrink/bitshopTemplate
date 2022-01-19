@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 
 from shopApp.cart import Cart
-from shopApp.forms import BestellingForm, KlantForm
+from shopApp.forms import BestellingForm, KlantForm, ProductPlusForm
 from shopApp.models import Product, Categorie, BestellingProduct
 
 
@@ -18,6 +18,7 @@ def product_filter(request, cat="alles"):
         'header_text': 'Alle producten' if cat == "alles" else 'Categorie: ' + cat,
         'header_colour': 'teal',
         'producten': Product.objects.all() if cat == "alles" else Product.objects.filter(categorie__naam__contains=cat),
+        'plus_form': ProductPlusForm(initial={'aantal': 1})
     })
 
 
@@ -40,7 +41,7 @@ def bestelling(request):
             cart.clear()
 
             # Melding neerzetten
-            messages.success(request, 'Bestelling is gemaakt, er wordt een bevestiging gestuurd naar ' + nieuwe_bestelling.klant.email)
+            messages.success(request, f'Bestelling is gemaakt, er wordt een bevestiging gestuurd naar {nieuwe_bestelling.klant.email}')
 
             return redirect('home')
 
@@ -64,7 +65,7 @@ def nieuwe_klant(request):
         if form.is_valid():
             nieuw_klant = form.save()
 
-            messages.success(request, "Klant '" + nieuw_klant.naam + "' toegevoegd aan het systeem.")
+            messages.success(request, f"Klant '{nieuw_klant.naam}' toegevoegd aan het systeem.")
             return redirect('bestelling')
     else:
         form = KlantForm()
@@ -96,9 +97,20 @@ def cart_view(request):
 
 
 def cart_add(request, prod_id):
+    aantal = 1
+
+    if request.method == 'POST':
+        form = ProductPlusForm(request.POST)
+
+        if form.is_valid():
+            aantal = form.cleaned_data['aantal']
+        else:
+            messages.error(request, "Er is iets mis gegaan met het toevoegen aan winkelwagen.")
+            return redirect('home')
+
     cart = Cart(request)
     product = get_object_or_404(Product, id=prod_id)
-    cart.add(product=product)
+    cart.add(product=product, aantal=aantal)
 
     referer = request.headers['Referer'].split('/')
     if not referer[len(referer) - 1]:

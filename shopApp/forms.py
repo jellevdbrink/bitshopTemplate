@@ -1,13 +1,13 @@
-from django.forms import ModelForm, DateTimeInput
+from django import forms
 
 from shopApp.models import Bestelling, Klant
 
 
-class DatumInput(DateTimeInput):
+class DatumInput(forms.DateTimeInput):
     input_type = 'date'
 
 
-class BestellingForm(ModelForm):
+class BestellingForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(BestellingForm, self).__init__(*args, **kwargs)
 
@@ -22,7 +22,7 @@ class BestellingForm(ModelForm):
         }
 
 
-class KlantForm(ModelForm):
+class KlantForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(KlantForm, self).__init__(*args, **kwargs)
 
@@ -33,3 +33,6 @@ class KlantForm(ModelForm):
         model = Klant
         fields = ['naam', 'email', 'telnr']
 
+
+class ProductPlusForm(forms.Form):
+    aantal = forms.IntegerField(min_value=1)

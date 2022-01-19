@@ -10,8 +10,9 @@
             {% if prod.zichtbaar %}
             <div id="{{ prod.id }}" class="w3-card-4 w3-margin w3-round" style="width: max(17%, 230px); height: max-content; display: inline-block;">
                 <div class="w3-display-container w3-text-white">
-                  <img class="w3-round" src="{% cropped_thumbnail prod 'cropping' %}" alt="Product foto" style="width:100%;">
-                  <div class="w3-xlarge w3-display-bottomleft w3-padding" style="text-shadow:2px 2px 0 #444">{{ prod }} {% if request.session.cart and request.session.cart|contains_key:prod.id %} <span class="w3-badge w3-blue">{% get_double_object_property request.session.cart prod.id 'aantal' %}</span>{% endif %}</div>
+                    <img class="w3-round" alt="Foto van {{ prod }}" src="{% cropped_thumbnail prod 'cropping' %}" onerror="this.onerror=null; this.src='/media/product_fotos/default_product.jpg.550x550_q85_crop_detail.jpg'" alt="Product foto" style="width:100%;">
+                    <div class="w3-xlarge w3-display-bottomleft w3-padding" style="text-shadow:2px 2px 0 #444">{{ prod }}</div>
+                    {% if request.session.cart and request.session.cart|contains_key:prod.id %}<div class="w3-large w3-display-topright w3-padding"> <span class="w3-badge w3-blue">{% get_total_amount request.session.cart prod %} {{ prod.eenheid }}</span> </div>{% endif %}
                 </div>
 
                 <div class="w3-row">
@@ -25,10 +26,47 @@
                     </div>
                     <div class="w3-third w3-center w3-margin-bottom">
                         <h5 class="w3-tiny">TOEVOEGEN</h5>
-                        <a class="w3-button w3-blue w3-round-large" href="{% url 'cart_add' prod.id %}"><img alt="icon ({{ cat.naam }})" src="https://img.icons8.com/ios-filled/30/000000/add-shopping-cart.png" /></a>
+{#                        <a class="w3-button w3-blue w3-round-large" href="{% url 'cart_add' prod.id %}"><img alt="icon ({{ cat.naam }})" src="https://img.icons8.com/ios-filled/30/000000/add-shopping-cart.png" /></a>#}
+                        <button onclick="document.getElementById('modal-{{ prod }}').style.display='block'" class="w3-button w3-blue w3-round-large"><img alt="icon ({{ cat.naam }})" src="https://img.icons8.com/ios-filled/30/000000/add-shopping-cart.png" /></button>
                     </div>
                   </div>
             </div>
+
+            <div id="modal-{{ prod }}" style="border-radius: 4px 4px 0 0" class="w3-modal">
+                <div style="border-radius: 4px" class="w3-modal-content w3-animate-zoom w3-card-4">
+                    <header style="border-radius: 4px 4px 0 0" class="w3-container w3-blue">
+                        <span onclick="document.getElementById('modal-{{ prod }}').style.display='none'" style="border-radius: 0 4px 0 0" class="w3-button w3-display-topright">&times;</span>
+                        <h2>{{ prod }}</h2>
+                    </header>
+
+                    <div class="w3-container w3-cell-row">
+                        <div class="w3-container w3-cell w3-mobile">
+                            <img class="w3-round w3-margin" src="{{ prod.foto.url }}" onerror="this.onerror=null; this.src='/media/product_fotos/default_product.jpg.550x550_q85_crop_detail.jpg'" style="width: 100%" >
+                        </div>
+
+                        <div class="w3-container w3-cell w3-cell-top w3-mobile" style="width: 50%;">
+                            <div class="w3-container">
+                                <p>{{ prod.beschrijving }}</p>
+                            </div>
+
+                            <form action="{% url 'cart_add' prod.id %}" method="post">
+                                {% csrf_token %}
+                                <div class="w3-container">
+                                    <p>extra opties</p>
+                                </div>
+
+                                <div class="w3-container">
+                                    <p class="w3-small"><i>x1 staat voor {{ prod.hoeveelheid }} {{ prod.eenheid }}</i></p>
+                                    {{ plus_form.as_p }}
+                                    <input type="submit" class="w3-button w3-blue w3-round w3-margin-bottom" value="Toevoegen">
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {% endif %}
         {% endfor %}
 
