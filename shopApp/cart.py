@@ -14,7 +14,7 @@ class Cart:
         self.session['cart'] = self.cart
         self.session.modified = True
 
-    def add(self, product, aantal=1):
+    def add(self, product, extra_optie="", aantal=1):
         id = product.id
 
         if str(id) not in self.cart.keys():
@@ -25,9 +25,7 @@ class Cart:
                 'product_id': id,
                 'naam': product.naam,
                 'aantal': aantal,
-                'hoeveelheid': product.hoeveelheid,
-                'eenheid': product.eenheid,
-                'foto_url': product.foto.url
+                'extra_optie': extra_optie
             }
         else:
             for key, value in self.cart.items():

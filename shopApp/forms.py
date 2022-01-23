@@ -36,3 +36,4 @@ class KlantForm(forms.ModelForm):
 
 class ProductPlusForm(forms.Form):
     aantal = forms.IntegerField(min_value=1)
+    extra_optie = forms.IntegerField()

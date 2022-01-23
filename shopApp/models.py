@@ -1,9 +1,14 @@
 from datetime import date
 
+from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
 
 from image_cropping import ImageRatioField
+
+
+def get_empty_list_default():
+    return []
 
 
 class Klant(models.Model):
@@ -52,6 +57,7 @@ class Product(models.Model):
     categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE, verbose_name="Categorie", db_index=False)
     foto = models.ImageField(verbose_name='Foto van product', upload_to='product_fotos', default='product_fotos/default_product.jpg')
     beschrijving = models.TextField('Beschrijving product')
+    extra_opties = ArrayField(models.CharField(max_length=50, default="", blank=True), default=get_empty_list_default)
 
     zichtbaar = models.BooleanField('Zichtbaar', default=True)
     # snijdbaar = models.BooleanField("Snijdbaar", default=False)
@@ -95,10 +101,11 @@ class BestellingProduct(models.Model):
     bestelling = models.ForeignKey(Bestelling, on_delete=models.CASCADE, verbose_name='Bestelling')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Product')
     aantal = models.PositiveIntegerField(verbose_name='Aantal')
+    extra_optie = models.CharField(max_length=50, default="", blank=True)
 
     class Meta:
         verbose_name = "Bestelling product"
         verbose_name_plural = "Bestelling producten"
 
     def __str__(self):
-        return f'Bestelling {self.bestelling.id} - Product {self.product.naam} x{str(self.aantal)}'
+        return f'Bestelling {self.bestelling.id} - Product {self.product.naam} {self.extra_optie} x{str(self.aantal)}'

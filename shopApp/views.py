@@ -18,7 +18,7 @@ def product_filter(request, cat="alles"):
         'header_text': 'Alle producten' if cat == "alles" else 'Categorie: ' + cat,
         'header_colour': 'teal',
         'producten': Product.objects.all() if cat == "alles" else Product.objects.filter(categorie__naam__contains=cat),
-        'plus_form': ProductPlusForm(initial={'aantal': 1})
+        'plus_form': ProductPlusForm(initial={'aantal': 1, 'extra_optie': -1})
     })
 
 
@@ -33,7 +33,7 @@ def bestelling(request):
             # Bestelling producten maken en toevoegen
             for prod_id, item in request.session['cart'].items():
                 product = get_object_or_404(Product, id=int(prod_id))
-                bestel_prod = BestellingProduct(product=product, bestelling=nieuwe_bestelling, aantal=item['aantal'])
+                bestel_prod = BestellingProduct(product=product, bestelling=nieuwe_bestelling, aantal=item['aantal'], extra_optie=item['extra_optie'])
                 bestel_prod.save()
 
             # Mandje resetten
@@ -98,19 +98,28 @@ def cart_view(request):
 
 def cart_add(request, prod_id):
     aantal = 1
+    extra_optie = ""
+    product = get_object_or_404(Product, id=prod_id)
 
     if request.method == 'POST':
         form = ProductPlusForm(request.POST)
 
         if form.is_valid():
             aantal = form.cleaned_data['aantal']
+            extra_optie_temp = form.cleaned_data['extra_optie']
+
+            if 0 < extra_optie_temp < len(product.extra_opties):
+                extra_optie = product.extra_opties[extra_optie_temp]
+            elif product.extra_opties:
+                messages.error(request, "Dat is geen mogelijke waarde voor extra_optie, product is niet toegevoegd aan winkelwagen.")
+                return redirect('home')
+
         else:
             messages.error(request, "Er is iets mis gegaan met het toevoegen aan winkelwagen.")
             return redirect('home')
 
     cart = Cart(request)
-    product = get_object_or_404(Product, id=prod_id)
-    cart.add(product=product, aantal=aantal)
+    cart.add(product=product, aantal=aantal, extra_optie=extra_optie)
 
     referer = request.headers['Referer'].split('/')
     if not referer[len(referer) - 1]:

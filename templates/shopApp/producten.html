@@ -49,18 +49,26 @@
                                 <p>{{ prod.beschrijving }}</p>
                             </div>
 
-                            <form action="{% url 'cart_add' prod.id %}" method="post">
+                            <div class="w3-container">
+                            {% if prod.extra_opties %}
+                                <p><i>Extra opties:</i></p>
+                                <ol class="">
+                                    {% for optie in prod.extra_opties %}
+                                        <li>{{ optie }}</li>
+                                    {% endfor %}
+                                </ol>
+                            {% else %}
+                                <p><i>Extra optie = -1</i></p>
+                            {% endif %}
+                            </div>
+
+
+                            <form class="w3-container" action="{% url 'cart_add' prod.id %}" method="post">
                                 {% csrf_token %}
-                                <div class="w3-container">
-                                    <p>extra opties</p>
-                                </div>
+                                <p class="w3-small"><i>x1 staat voor {{ prod.hoeveelheid }} {{ prod.eenheid }}</i></p>
+                                {{ plus_form.as_p }}
+                                <input type="submit" class="w3-button w3-blue w3-round w3-margin-bottom" value="Toevoegen">
 
-                                <div class="w3-container">
-                                    <p class="w3-small"><i>x1 staat voor {{ prod.hoeveelheid }} {{ prod.eenheid }}</i></p>
-                                    {{ plus_form.as_p }}
-                                    <input type="submit" class="w3-button w3-blue w3-round w3-margin-bottom" value="Toevoegen">
-
-                                </div>
                             </form>
                         </div>
                     </div>
