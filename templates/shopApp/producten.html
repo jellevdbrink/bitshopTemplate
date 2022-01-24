@@ -12,7 +12,7 @@
                 <div class="w3-display-container w3-text-white">
                     <img class="w3-round" alt="Foto van {{ prod }}" src="{% cropped_thumbnail prod 'cropping' %}" onerror="this.onerror=null; this.src='/media/product_fotos/default_product.jpg.550x550_q85_crop_detail.jpg'" alt="Product foto" style="width:100%;">
                     <div class="w3-xlarge w3-display-bottomleft w3-padding" style="text-shadow:2px 2px 0 #444">{{ prod }}</div>
-                    {% if request.session.cart and request.session.cart|contains_key:prod.id %}<div class="w3-large w3-display-topright w3-padding"> <span class="w3-badge w3-blue">{% get_total_amount request.session.cart prod %} {{ prod.eenheid }}</span> </div>{% endif %}
+                    {% if request.session.cart and request.session.cart|contains_key_cart:prod.id %}<div class="w3-large w3-display-topright w3-padding"> <span class="w3-badge w3-blue">{% get_total_amount request.session.cart prod %} {{ prod.eenheid }}</span> </div>{% endif %}
                 </div>
 
                 <div class="w3-row">

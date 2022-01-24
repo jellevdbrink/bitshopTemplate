@@ -31,7 +31,8 @@ def bestelling(request):
             nieuwe_bestelling = form.save()
 
             # Bestelling producten maken en toevoegen
-            for prod_id, item in request.session['cart'].items():
+            for key, item in request.session['cart'].items():
+                prod_id = key.split('_')[0]
                 product = get_object_or_404(Product, id=int(prod_id))
                 bestel_prod = BestellingProduct(product=product, bestelling=nieuwe_bestelling, aantal=item['aantal'], extra_optie=item['extra_optie'])
                 bestel_prod.save()
@@ -68,7 +69,7 @@ def nieuwe_klant(request):
             messages.success(request, f"Klant '{nieuw_klant.naam}' toegevoegd aan het systeem.")
             return redirect('bestelling')
     else:
-        form = KlantForm()
+        form = KlantForm(initial={'telnr': '06'})
 
     return render(request, 'shopApp/nieuwe_klant.html', {
         'categories': Categorie.objects.all(),
@@ -81,11 +82,14 @@ def nieuwe_klant(request):
 # ----- CART FUNCTIES --------------------------------------------------------------
 
 def cart_view(request):
+    producten = {}
     if request.session.get('cart'):
-        producten_id_list = [int(key) for key in request.session.get('cart').keys()]
-        producten = Product.objects.filter(id__in=producten_id_list)
-    else:
-        producten = []
+        # producten_id_list = [int(key) for key in request.session.get('cart').keys()]
+        # producten = Product.objects.filter(id__in=producten_id_list)
+
+        for key in request.session['cart'].keys():
+            prod_id = int(key.split('_')[0])
+            producten[key] = Product.objects.get(id=prod_id)
 
     return render(request, 'shopApp/cart.html', {
         'categories': Categorie.objects.all(),
@@ -108,10 +112,10 @@ def cart_add(request, prod_id):
             aantal = form.cleaned_data['aantal']
             extra_optie_temp = form.cleaned_data['extra_optie']
 
-            if 0 < extra_optie_temp < len(product.extra_opties):
-                extra_optie = product.extra_opties[extra_optie_temp]
+            if 0 < extra_optie_temp <= len(product.extra_opties):
+                extra_optie = product.extra_opties[extra_optie_temp - 1]
             elif product.extra_opties:
-                messages.error(request, "Dat is geen mogelijke waarde voor extra_optie, product is niet toegevoegd aan winkelwagen.")
+                messages.error(request, "Dat is geen mogelijke waarde voor extra_optie, product is niet toegevoegd aan winkelwagen. Moet minder zijn dan " + str(len(product.extra_opties)))
                 return redirect('home')
 
         else:
@@ -134,22 +138,31 @@ def cart_clear(request):
     return redirect('cart')
 
 
-def cart_item_increment(request, prod_id):
+def cart_item_increment(request, key):
     cart = Cart(request)
-    product = get_object_or_404(Product, id=prod_id)
-    cart.add(product=product)
+    product = get_object_or_404(Product, id=int(key.split('_')[0]))
+
+    extra_optie = request.session['cart'][key]['extra_optie']
+
+    cart.add(product=product, extra_optie=extra_optie)
     return redirect('cart')
 
 
-def cart_item_decrement(request, prod_id):
+def cart_item_decrement(request, key):
     cart = Cart(request)
-    product = get_object_or_404(Product, id=prod_id)
-    cart.decrement(product=product)
+    product = get_object_or_404(Product, id=int(key.split('_')[0]))
+
+    extra_optie = request.session['cart'][key]['extra_optie']
+
+    cart.decrement(product=product, extra_optie=extra_optie)
     return redirect('cart')
 
 
-def cart_item_remove(request, prod_id):
+def cart_item_remove(request, key):
     cart = Cart(request)
-    product = get_object_or_404(Product, id=prod_id)
-    cart.remove(product=product)
+    product = get_object_or_404(Product, id=int(key.split('_')[0]))
+
+    extra_optie = request.session['cart'][key]['extra_optie']
+
+    cart.remove(product=product, extra_optie=extra_optie)
     return redirect('cart')

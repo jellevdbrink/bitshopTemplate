@@ -77,9 +77,6 @@ class Product(models.Model):
         return self.naam
 
 
-#class MarineerProduct
-
-
 # ----- BESTELLINGEN --------------------------------------------------------------
 
 class Bestelling(models.Model):

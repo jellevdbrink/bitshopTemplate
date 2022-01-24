@@ -21,9 +21,9 @@ from shopApp import views
 urlpatterns = [
     path('cart/add/<int:prod_id>/', views.cart_add, name='cart_add'),
     path('cart/clear/', views.cart_clear, name='cart_clear'),
-    path('cart/item_increment/<int:prod_id>/', views.cart_item_increment, name='cart_item_increment'),
-    path('cart/item_decrement/<int:prod_id>/', views.cart_item_decrement, name='cart_item_decrement'),
-    path('cart/item_remove/<int:prod_id>/', views.cart_item_remove, name='cart_item_remove'),
+    path('cart/item_increment/<str:key>/', views.cart_item_increment, name='cart_item_increment'),
+    path('cart/item_decrement/<str:key>/', views.cart_item_decrement, name='cart_item_decrement'),
+    path('cart/item_remove/<str:key>/', views.cart_item_remove, name='cart_item_remove'),
     path('cart/', views.cart_view, name='cart'),
 
     path('bestelling/', views.bestelling, name='bestelling'),

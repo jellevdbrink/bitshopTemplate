@@ -22,7 +22,7 @@ class CategorieAdmin(admin.ModelAdmin):
 
 
 class BestellingProductAdmin(admin.ModelAdmin):
-    list_display = ('bestelling', 'product', 'aantal')
+    list_display = ('bestelling', 'product', 'extra_optie', 'aantal')
 
 
 admin.site.register(Categorie, CategorieAdmin)

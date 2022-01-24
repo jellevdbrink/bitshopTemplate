@@ -91,7 +91,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'bitshoptemplate',
         'USER': 'django_app',
-        'PASSWORD': 'bitshopTemplate123', # os.environ['DB_PASSWORD'],
+        'PASSWORD': 'bitshopTemplate123', #os.environ['DB_PASSWORD'],
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -140,13 +140,15 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+# Automatische message settings voor w3-css
 MESSAGE_TAGS = {
     messages.DEBUG: 'brown',
     messages.ERROR: 'pale-red',

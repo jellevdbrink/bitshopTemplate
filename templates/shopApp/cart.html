@@ -13,20 +13,20 @@
             <hr>
 
             <ul class="w3-ul w3-margin-top">
-                {% for prod in producten %}
+                {% for key, prod in producten.items %}
 
                     <li id="{{ prod.id }}" class="w3-bar">
                         <img class="w3-circle w3-bar-item" src="{% cropped_thumbnail prod 'cropping' %}" alt="Product foto" style="width:120px; height: auto;">
                         <div class="w3-bar-item">
-                            <h2>{{ prod.naam }}</h2>
+                            <h2>{{ prod.naam }} {% if prod.extra_opties %}({{ key|second_from_split_ }}){% endif %}</h2>
                             <p><i>{{ prod.hoeveelheid }} {{ prod.eenheid }}</i></p>
                         </div>
                         <div class="w3-bar-item w3-right">
                             <div class="w3-bar">
-                                <a href="{% url 'cart_item_remove' prod.id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/trash.png" alt="trash-icon"></a>
-                                <a href="{% url 'cart_item_decrement' prod.id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/minus.png" alt="minus-icon"></a>
-                                <p class="w3-bar-item">{% get_total_amount request.session.cart prod %} {{ prod.eenheid }}</p>
-                                <a href="{% url 'cart_item_increment' prod.id %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/plus.png" alt="plus-icon"></a>
+                                <a href="{% url 'cart_item_remove' key %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/trash.png" alt="trash-icon"></a>
+                                <a href="{% url 'cart_item_decrement' key %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/minus.png" alt="minus-icon"></a>
+                                <p class="w3-bar-item">{% get_total_amount_optie request.session.cart prod key|second_from_split_ %} {{ prod.eenheid }}</p>
+                                <a href="{% url 'cart_item_increment' key %}"><img class="w3-bar-item" src="https://img.icons8.com/ios-filled/40/000000/plus.png" alt="plus-icon"></a>
                             </div>
                         </div>
                     </li>
